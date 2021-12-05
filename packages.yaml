@@ -1,0 +1,54 @@
+version: v0.1
+maintainer: Goncalo Oliveira
+packages:
+  civo:
+    source: github
+    owner: civo
+    name: cli
+    description: Command line interface for interacting with your Civo resources
+    platforms:
+      linux.x64: civo-${sem-version}-linux-amd64.tar.gz
+      linux.arm64: civo-${sem-version}-linux-arm64.tar.gz
+      darwin.x64: civo-${sem-version}-darwin-amd64.tar.gz
+      windows.x64: civo-${sem-version}-windows-amd64.zip
+  doctl:
+    source: github
+    owner: digitalocean
+    name: doctl
+    description: The official command line interface for the DigitalOcean API
+    platforms:
+      linux.x64: doctl-${sem-version}-linux-amd64.tar.gz
+      linux.arm64: doctl-${sem-version}-linux-arm64.tar.gz
+      darwin.x64: doctl-${sem-version}-darwin-amd64.tar.gz
+      windows.x64: doctl-${sem-version}-windows-amd64.zip
+  faas-cli:
+    source: github
+    owner: openfaas
+    name: faas-cli
+    description: Official CLI for OpenFaaS
+    platforms:
+      linux.x64: faas-cli
+      linux.arm64: faas-cli-arm64
+      darwin.x64: faas-cli-darwin
+      windows.x64: faas-cli.exe
+  kubectl:
+    source: github
+    url: https://storage.googleapis.com/kubernetes-release/release/
+    owner: kubernetes
+    name: kubectl
+    description: The kubectl command line tool lets you control Kubernetes clusters
+    version: v$
+    tag: kubernetes-$
+    platforms:
+      linux.x64: bin/linux/amd64/kubectl
+      darwin.x64: bin/darwin/amd64/kubectl
+      windows.x64: bin/windows/amd64/kubectl.exe
+  minikube:
+    source: github
+    owner: kubernetes
+    name: minikube
+    description: Run Kubernetes locally
+    platforms:
+      linux.x64: minikube-linux-amd64
+      darwin.x64: minikube-darwin-amd64
+      windows.x64: minikube-windows-amd64.exe
