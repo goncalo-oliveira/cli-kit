@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;
 using ICSharpCode.SharpZipLib.Zip;
@@ -16,7 +17,7 @@ namespace GitPak
     {
         public static string ExtractPackage( this Package package, string tmpFilePath, PackageCompression compression )
         {
-            var compressedFilename = Path.GetFileName( package.GetPlatformTemplate() );
+            var compressedFilename = Path.GetFileName( package.GetPlatformTemplate().DownloadUrl );
 
             Console.WriteLine( $"Extracting {compressedFilename}..." );
 
@@ -76,7 +77,7 @@ namespace GitPak
             {
                 using ( Stream gzipStream = new GZipInputStream( inStream ) )
                 {
-                    TarArchive tarArchive = TarArchive.CreateInputTarArchive(gzipStream);
+                    TarArchive tarArchive = TarArchive.CreateInputTarArchive( gzipStream, Encoding.UTF8 );
                     tarArchive.ExtractContents( tmpPath );
                     tarArchive.Close();
                 }
@@ -85,7 +86,7 @@ namespace GitPak
             File.Delete( tmpFilepath );
 
             // move tool executable
-            var filepath = Path.Combine( tmpPath, package.FileName );
+            var filepath = Path.Combine( tmpPath, package.GetPlatformTemplate().ExtractUrl ?? package.FileName );
 
             if ( !File.Exists( filepath ) )
             {
@@ -103,7 +104,7 @@ namespace GitPak
         {
             using ( var zipFile = new ZipFile( File.OpenRead( tmpFilepath ), false ) )
             {
-                var entry = zipFile.GetEntry( package.GetTargetFileName() );
+                var entry = zipFile.GetEntry( package.GetPlatformTemplate().ExtractUrl ?? package.GetTargetFileName() );
 
                 if ( entry == null )
                 {
@@ -133,7 +134,9 @@ namespace GitPak
                         File.Delete( tmpZipExtractPath );
                     }
 
+                    #pragma warning disable CA2200
                     throw ex;
+                    #pragma warning restore CA2200
                 }
             }
             

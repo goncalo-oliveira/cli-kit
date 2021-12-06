@@ -20,6 +20,8 @@ namespace GitPak
                 package.Name = name;
             }
 
+            package.IsCustomUrl = !string.IsNullOrEmpty( package.Url );
+
             return ( package );
         }
     }

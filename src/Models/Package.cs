@@ -10,6 +10,8 @@ namespace GitPak
         /// </summary>
         internal string FileName { get; set; }
 
+        public bool IsCustomUrl { get; set; }
+
         /// <summary>
         /// The name of the tool
         /// </summary>

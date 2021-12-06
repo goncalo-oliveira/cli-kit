@@ -36,6 +36,25 @@ namespace GitPak
 
             // TODO: unless the name is '.' we install (or overwrite) a single tool
 
+            // look for version alias (name:version or name@version)
+            if ( Name.Contains( ':' ) || Name.Contains( '@' ) )
+            {
+                if ( !string.IsNullOrEmpty( Version ) )
+                {
+                    // adding version directly and by option! no can do...
+                    Console.WriteLine( "Version number specified on the name but also with --version value!" );
+                    Console.WriteLine( "Use only one of the methods." );
+                    Console.WriteLine();
+
+                    return ( 1 );
+                }
+
+                var idx = Name.IndexOfAny( new char[] { ':', '@' } );
+                Version = Name.Substring( idx + 1 );
+
+                Name = Name.Substring( 0, idx );
+            }
+
             var package = packageSource.Packages.GetPackage( Name );
 
             if ( package == null )
@@ -48,6 +67,11 @@ namespace GitPak
                 return ( 1 );
             }
 
+            return await InstallPackageAsync( package );
+        }
+
+        internal async Task<int> InstallPackageAsync( Package package )
+        {
             if ( !package.VerifyFormat() )
             {
                 return ( 1 );
@@ -109,7 +133,7 @@ namespace GitPak
                 return ( 1 );
             }
 
-            Console.WriteLine( $"Downloading {package.Name}:{package.Version}..." );
+            Console.WriteLine( $"Downloading {package.FileName}:{package.GetSemVer()}..." );
 
             var platform = package.GetPlatformTemplate();
             var url = package.GetDownloadUrl();
@@ -131,7 +155,7 @@ namespace GitPak
 
             // TODO: handle tar.gz
             // TODO: handle .zip
-            if ( platform.EndsWith( ".tar.gz" ) )
+            if ( platform.DownloadUrl.EndsWith( ".tar.gz" ) )
             {
                 tmpFilepath = package.ExtractPackage( tmpFilepath, PackageCompression.TarGZip );
 
@@ -141,7 +165,7 @@ namespace GitPak
                 }
             }
 
-            if ( platform.EndsWith( ".zip" ) )
+            if ( platform.DownloadUrl.EndsWith( ".zip" ) )
             {
                 tmpFilepath = package.ExtractPackage( tmpFilepath, PackageCompression.Zip );
 
@@ -170,6 +194,13 @@ namespace GitPak
 
             Console.WriteLine();
 
+            // add tool to local database
+            var installedTools = await InstalledToolSource.LoadAsync();
+
+            installedTools.Tools[package.FileName] = package.GetSemVer();
+
+            await installedTools.WriteAsync();
+
             return ( 0 );
         }
 
@@ -197,7 +228,7 @@ namespace GitPak
                 return ( false );
             }
 
-            package.SetVersion( latestVersion );
+            package.SetVersion( latestVersion, false );
 
             return ( true );
         }

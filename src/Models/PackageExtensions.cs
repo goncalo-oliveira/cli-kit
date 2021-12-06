@@ -27,28 +27,31 @@ namespace GitPak
         {
             string url;
 
-            if ( package.Source.Equals( "github" ) )
+            if ( package.Source.Equals( "github" ) && string.IsNullOrEmpty( package.Url ) )
             {
                 url = string.Join( '/', new string[]
                 {
-                    package.Url,
+                    "https://github.com",
+                    package.Owner,
+                    package.Name,
+                    "releases/download",
                     package.Version,
-                    GetPlatformTemplate( package )
+                    GetPlatformTemplate( package ).DownloadUrl
                 } );
             }
             else
             {
                 url = string.Join( '/', new string[]
                 {
-                    package.Url,
-                    GetPlatformTemplate( package )
+                    package.Url.TrimEnd( '/' ),
+                    GetPlatformTemplate( package ).DownloadUrl
                 } );
             }
 
             return ParseVariables( package, url );
         }
 
-        public static string GetPlatformTemplate( this Package package )
+        public static PlatformTemplate GetPlatformTemplate( this Package package )
         {
             var platform = package.Platforms.GetValueOrDefault( OSInformation.GetOSTemplate() );
 
@@ -85,9 +88,11 @@ namespace GitPak
             return ( semver );
         }
 
-        public static void SetVersion( this Package package, string version )
+        public static void SetVersion( this Package package, string version, bool useTemplate = true )
         {
-            package.Version = package.Version.Replace( "$", version );
+            package.Version = useTemplate
+                ? package.Version.Replace( "$", version ) // set with template
+                : version;                                // set without template (explicit set)
         }
 
         public static string GetTargetFileName( this Package package )
@@ -150,13 +155,13 @@ namespace GitPak
                 return ( false );
             }
 
-            // if Source if 'github' we need to set the Url (unless manually set)
-            if ( package.Source.Equals( "github" ) && string.IsNullOrEmpty( package.Url ) )
-            {
-                package.Url = $"https://github.com/{package.Owner}/{package.Name}/releases/download";
-            }
+            // // if Source if 'github' we need to set the Url (unless manually set)
+            // if ( package.Source.Equals( "github" ) && string.IsNullOrEmpty( package.Url ) )
+            // {
+            //     package.Url = $"https://github.com/{package.Owner}/{package.Name}/releases/download";
+            // }
 
-            package.Url = package.Url.TrimEnd( '/' );
+            // package.Url = package.Url.TrimEnd( '/' );
 
             return ( true );
         }

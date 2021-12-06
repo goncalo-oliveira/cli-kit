@@ -8,6 +8,8 @@ namespace GitPak
     [Subcommand( 
         typeof( AddCommand ),
         typeof( ListCommand ),
+        typeof( RemoveCommand ),
+        typeof( UpdateCommand ),
         typeof( VersionCommand )
     )]
     public class PakCommand

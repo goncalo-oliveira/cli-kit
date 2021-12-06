@@ -5,7 +5,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <!-- <ImplicitUsings>enable</ImplicitUsings> -->
     <!-- <Nullable>enable</Nullable> -->
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <Authors>Goncalo Oliveira</Authors>
     <Description>CLI tool installer</Description>
     <RepositoryUrl>https://github.com/goncalo-oliveira/gitpak</RepositoryUrl>

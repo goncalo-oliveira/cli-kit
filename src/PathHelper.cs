@@ -9,6 +9,10 @@ namespace GitPak
             => Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.Personal )
                 , ".gitpak/bin" );
 
+        public static string GetHomePath()
+            => Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.Personal )
+                , ".gitpak/" );
+
         public static void EnsureTargetPathExists()
         {
             var path = GetTargetPath();

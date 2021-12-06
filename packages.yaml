@@ -1,11 +1,22 @@
 version: v0.1
 maintainer: Goncalo Oliveira
 packages:
+  arkade:
+    source: github
+    owner: alexellis
+    name: arkade
+    description: Open Source Kubernetes Marketplace
+    platforms:
+      linux.x64: arkade
+      linux.arm64: arkade-arm64
+      darwin.x64: arkade-darwin
+      windows.x64: arkade.exe
   civo:
     source: github
     owner: civo
     name: cli
     description: Command line interface for interacting with your Civo resources
+    version: v$
     platforms:
       linux.x64: civo-${sem-version}-linux-amd64.tar.gz
       linux.arm64: civo-${sem-version}-linux-arm64.tar.gz
@@ -16,6 +27,7 @@ packages:
     owner: digitalocean
     name: doctl
     description: The official command line interface for the DigitalOcean API
+    version: v$
     platforms:
       linux.x64: doctl-${sem-version}-linux-amd64.tar.gz
       linux.arm64: doctl-${sem-version}-linux-arm64.tar.gz
@@ -31,13 +43,54 @@ packages:
       linux.arm64: faas-cli-arm64
       darwin.x64: faas-cli-darwin
       windows.x64: faas-cli.exe
+  helm:
+    source: github
+    url: https://get.helm.sh/
+    owner: helm
+    name: helm
+    description: The Kubernetes Package Manager
+    version: v$
+    platforms:
+      linux.x64: helm-${version}-linux-amd64.tar.gz,linux-amd64/helm
+      linux.arm64: helm-${version}-linux-arm64.tar.gz,linux-arm64/helm
+      darwin.x64: helm-${version}-darwin-amd64.tar.gz,darwin-amd64/helm
+      windows.x64: helm-${version}-windows-amd64.zip,windows-amd64/helm.exe
+  hugo:
+    source: github
+    owner: gohugoio
+    name: hugo
+    description: The world’s fastest framework for building websites
+    version: v$
+    platforms:
+      linux.x64: hugo_${sem-version}_Linux-64bit.tar.gz
+      linux.arm64: hugo_${sem-version}_Linux-ARM64.tar.gz
+      darwin.x64: hugo_${sem-version}_macOS-ARM64.tar.gz
+      windows.x64: hugo_${sem-version}_Windows-64bit.zip
+  jq:
+    source: github
+    owner: stedolan
+    name: jq
+    description: Command-line JSON processor
+    version: jq-$
+    platforms:
+      linux.x64: jq-linux64
+      darwin.x64: jq-osx-amd64
+      windows.x64: jq-win64.exe
+  k3s:
+    source: github
+    owner: k3s-io
+    name: k3s
+    description: Lightweight Kubernetes
+    platforms:
+      linux.x64: k3s
+      linux.arm64: k3s-arm64
   kubectl:
     source: github
-    url: https://storage.googleapis.com/kubernetes-release/release/
+    url: https://storage.googleapis.com/kubernetes-release/release/v${version}
     owner: kubernetes
     name: kubectl
     description: The kubectl command line tool lets you control Kubernetes clusters
-    version: v$
+    #version: v$
     tag: kubernetes-$
     platforms:
       linux.x64: bin/linux/amd64/kubectl
@@ -48,7 +101,51 @@ packages:
     owner: kubernetes
     name: minikube
     description: Run Kubernetes locally
+    version: v$
     platforms:
       linux.x64: minikube-linux-amd64
       darwin.x64: minikube-darwin-amd64
       windows.x64: minikube-windows-amd64.exe
+  podman:
+    source: github
+    owner: containers
+    name: podman
+    description: A tool for managing OCI containers and pods
+    version: v$
+    platforms:
+      linux.x64: podman-remote-static.tar.gz,podman-remote-static
+      darwin.x64: podman-remote-release-darwin.zip,podman-${sem-version}/podman
+      windows.x64: podman-remote-release-windows.zip,podman-${sem-version}/podman.exe
+  rest:
+    source: github
+    owner: goncalo-oliveira
+    name: rest-cli
+    description: Client for RESTful APIs
+    version: v$
+    platforms:
+      linux.x64: rest-linux-x64.zip
+      darwin.x64: rest-osx-x64.zip
+      windows.x64: rest-win10-x64.zip
+  terraform:
+    source: github
+    url: https://releases.hashicorp.com/terraform/${sem-version}
+    owner: hashicorp
+    name: terraform
+    description: Terraform enables you to safely and predictably create, change, and improve infrastructure
+    version: v$
+    platforms:
+      linux.x64: terraform_${sem-version}_linux_amd64.zip
+      linux.arm64: terraform_${sem-version}_linux_arm64.zip
+      darwin.x64: terraform_${sem-version}_darwin_amd64.zip
+      windows.x64: terraform_${sem-version}_windows_amd64.zip
+  yq:
+    source: github
+    owner: mikefarah
+    name: yq
+    description: yq is a portable command-line YAML processor
+    version: v$
+    platforms:
+      linux.x64: yq_linux_amd64
+      linux.arm64: yq_linux_rm64
+      darwin.x64: yq_darwin_amd64
+      windows.x64: yq_windows_amd64.exe
