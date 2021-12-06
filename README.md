@@ -48,6 +48,7 @@ The list of available tools can be found on [packages.yml]() on this repository.
 
 ## TODO
 
+- install multiple tools at once
 - allow a configuration file to customize where to download the tools
 - read local packages.y(a)ml file if it exists
 - self-update
