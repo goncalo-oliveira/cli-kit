@@ -43,7 +43,7 @@ clik update --install
 
 ## Available Tools
 
-The list of available tools can be found on [packages.yml]() on this repository. Updating this list doesn't require a new release of this CLI.
+The list of available tools can be found on [packages.yml](packages.yaml) on this repository. Updating this list doesn't require a new release of this CLI.
 
 
 ## TODO
