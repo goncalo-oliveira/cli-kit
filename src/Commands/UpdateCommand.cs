@@ -41,9 +41,10 @@ namespace CliKit
             var tasks = installedTools.Tools.Keys.Select( x => GetLatestAsync( packageSource.Packages.GetPackage( x ) ) )
                 .ToArray();
 
+            Console.WriteLine( "Looking for updates..." );
+
             var results = await Task.WhenAll( tasks );
 
-            Console.WriteLine( "Looking for updates..." );
             Console.WriteLine();
 
             var numberOfUpdates = 0;

@@ -19,7 +19,7 @@ namespace CliKit
                 new MediaTypeWithQualityHeaderValue( "application/vnd.github.v3+json" ) );
 
             httpClient.DefaultRequestHeaders.UserAgent.Add( 
-                new ProductInfoHeaderValue( "CLI Kit", GetType().Assembly.GetVersion() ) );
+                new ProductInfoHeaderValue( "CLI-Kit", GetType().Assembly.GetVersion() ) );
 
             client = new RestClient( httpClient
                 , "https://api.github.com/"
