@@ -4,9 +4,9 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Faactory.RestClient;
-using GitPak.GitHub;
+using CliKit.GitHub;
 
-namespace GitPak
+namespace CliKit
 {
     internal class GitHubClient
     {
@@ -19,7 +19,7 @@ namespace GitPak
                 new MediaTypeWithQualityHeaderValue( "application/vnd.github.v3+json" ) );
 
             httpClient.DefaultRequestHeaders.UserAgent.Add( 
-                new ProductInfoHeaderValue( "gitpak", GetType().Assembly.GetVersion() ) );
+                new ProductInfoHeaderValue( "CLI Kit", GetType().Assembly.GetVersion() ) );
 
             client = new RestClient( httpClient
                 , "https://api.github.com/"

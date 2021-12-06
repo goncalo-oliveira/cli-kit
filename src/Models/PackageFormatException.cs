@@ -1,6 +1,6 @@
 using System;
 
-namespace GitPak
+namespace CliKit
 {
     public class PackageFormatException : Exception
     {

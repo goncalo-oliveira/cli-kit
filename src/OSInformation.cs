@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace GitPak
+namespace CliKit
 {
     internal static class OSInformation
     {

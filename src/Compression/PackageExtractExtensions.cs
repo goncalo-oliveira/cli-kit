@@ -5,7 +5,7 @@ using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;
 using ICSharpCode.SharpZipLib.Zip;
 
-namespace GitPak
+namespace CliKit
 {
     internal enum PackageCompression
     {

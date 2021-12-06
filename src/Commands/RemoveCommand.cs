@@ -6,9 +6,9 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 
-namespace GitPak
+namespace CliKit
 {
-    [Command( Name = "remove", Description = "List available tools" )]
+    [Command( Name = "remove", Description = "Remove a previously downloaded tool" )]
     public class RemoveCommand
     {
         [Required]

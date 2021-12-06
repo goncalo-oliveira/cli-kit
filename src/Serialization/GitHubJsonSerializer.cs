@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using Faactory.RestClient;
 
-namespace GitPak.GitHub
+namespace CliKit.GitHub
 {
     internal class GitHubJsonSerializer : ISerializer
     {

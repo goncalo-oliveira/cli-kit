@@ -1,17 +1,17 @@
 using System;
 using System.IO;
 
-namespace GitPak
+namespace CliKit
 {
     internal static class PathHelper
     {
         public static string GetTargetPath()
             => Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.Personal )
-                , ".gitpak/bin" );
+                , ".clikit/bin" );
 
         public static string GetHomePath()
             => Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.Personal )
-                , ".gitpak/" );
+                , ".clikit/" );
 
         public static void EnsureTargetPathExists()
         {

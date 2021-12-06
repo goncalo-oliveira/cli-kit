@@ -7,8 +7,8 @@
     <!-- <Nullable>enable</Nullable> -->
     <Version>0.1.1</Version>
     <Authors>Goncalo Oliveira</Authors>
-    <Description>CLI tool installer</Description>
-    <RepositoryUrl>https://github.com/goncalo-oliveira/gitpak</RepositoryUrl>
+    <Description>CLI Kit</Description>
+    <RepositoryUrl>https://github.com/goncalo-oliveira/cli-kit</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>

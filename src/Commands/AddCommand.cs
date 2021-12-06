@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using CliWrap;
 using McMaster.Extensions.CommandLineUtils;
 
-namespace GitPak
+namespace CliKit
 {
     [Command( Name = "add", Description = "Download a tool" )]
     public class AddCommand
@@ -61,7 +61,7 @@ namespace GitPak
             {
                 Console.WriteLine( $"I'm sorry, I don't know how to download '{Name}' tool." );
                 Console.WriteLine( "If you'd like to make a request or a contribution, visit us on GitHub" );
-                Console.WriteLine( "https://github.com/goncalo-oliveira/gitpak" );
+                Console.WriteLine( "https://github.com/goncalo-oliveira/cli-kit" );
                 Console.WriteLine();
 
                 return ( 1 );
@@ -98,28 +98,7 @@ namespace GitPak
                 await SetPackageVersionFromGitHubAsync( package );
             }
 
-            // look for version plugins
-            // TODO: needs some cleanup
-            if ( package.Version.Contains( '$' ) )
-            {
-                await ApplyVersionPlugins( package );
-            }
-
             return await DownloadPackage( package );
-        }
-
-        private async Task ApplyVersionPlugins( Package package )
-        {
-            if ( package.Plugins?.ContainsKey( "google.storageapis" ) == true )
-            {
-                // TODO: organize this
-                var latestVersion = await package.GoogleStorageGetLatestVersionAsync();
-
-                if ( latestVersion != null )
-                {
-                    package.SetVersion( latestVersion );
-                }
-            }
         }
 
         private async Task<int> DownloadPackage( Package package )

@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace GitPak
+namespace CliKit
 {
     internal static class PackageHelper
     {
@@ -12,7 +12,7 @@ namespace GitPak
                 #if DEBUG
                 source = "packages.yaml";
                 #else
-                source = "https://raw.githubusercontent.com/goncalo-oliveira/gitpak/main/packages.yaml";
+                source = "https://raw.githubusercontent.com/goncalo-oliveira/cli-kit/main/packages.yaml";
                 #endif
             }
 

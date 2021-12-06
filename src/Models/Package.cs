@@ -1,7 +1,7 @@
 using System;
 using Faactory.Collections;
 
-namespace GitPak
+namespace CliKit
 {
     public class Package
     {

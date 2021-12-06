@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace GitPak
+namespace CliKit
 {
     internal static class PackageGitHubExtensions
     {

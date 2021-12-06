@@ -1,6 +1,6 @@
 using System;
 
-namespace GitPak.GitHub
+namespace CliKit.GitHub
 {
     public class Tag
     {

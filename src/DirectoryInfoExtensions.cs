@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace GitPak
+namespace CliKit
 {
     internal static class DirectoryInfoExtensions
     {

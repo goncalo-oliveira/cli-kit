@@ -5,7 +5,7 @@ using Faactory.Collections;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace GitPak
+namespace CliKit
 {
     public class InstalledToolSource
     {

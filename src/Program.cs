@@ -1,5 +1,5 @@
 ﻿using System;
-using GitPak;
+using CliKit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
@@ -11,9 +11,9 @@ var builder = new HostBuilder();
 
 try
 {
-    return await builder.RunCommandLineApplicationAsync<PakCommand>( args, app =>
+    return await builder.RunCommandLineApplicationAsync<CliKitCommand>( args, app =>
     {
-        app.FullName = "gitpak";
+        app.FullName = "CLI Kit";
         app.ShortVersionGetter = () => System.Reflection.Assembly.GetExecutingAssembly().GetVersion();
     } );
 }

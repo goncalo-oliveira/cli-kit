@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace GitPak
+namespace CliKit
 {
     internal static class PackageDictionaryExtensions
     {

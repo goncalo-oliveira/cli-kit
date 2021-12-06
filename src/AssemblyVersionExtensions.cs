@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace GitPak
+namespace CliKit
 {
     internal static class AssemblyVersionExtensions
     {

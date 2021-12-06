@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using System.Text.Json;
 
-namespace GitPak
+namespace CliKit
 {
     public sealed class JsonSnakeCaseNamingPolicy : JsonNamingPolicy
     {

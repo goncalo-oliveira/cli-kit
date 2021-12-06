@@ -5,7 +5,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 
-namespace GitPak
+namespace CliKit
 {
     [Command( Name = "update", Description = "Look for available updates for installed tools" )]
     public class UpdateCommand
