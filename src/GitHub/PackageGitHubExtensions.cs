@@ -8,7 +8,21 @@ namespace CliKit
         private static Lazy<GitHubClient> ghClientFactory = new Lazy<GitHubClient>();
         private static GitHubClient Client => ghClientFactory.Value;
 
-        public static async Task<string> GetLatestVersionAsync( this Package package )
+        public static async Task<string> GetLatestVersionFromGitHubAsync( this Package package )
+        {
+            // let's attempt to retrieve the latest release
+            var latestVersion = await package.GetLatestVersionFromReleasesAsync();
+
+            // if that doesn't work we'll attempt to retrieve the latest tag (when available)
+            if ( ( latestVersion == null ) && ( !string.IsNullOrEmpty( package.Tag ) ) )
+            {
+                latestVersion = await package.GetLatestVersionFromTagsAsync();
+            }
+
+            return ( latestVersion );
+        }
+
+        private static async Task<string> GetLatestVersionFromReleasesAsync( this Package package )
         {
             var ghRelease = await Client.GetLatestReleaseAsync( package.Owner, package.Name );
 
@@ -20,7 +34,7 @@ namespace CliKit
             return ( ghRelease.TagName );
         }
 
-        public static async Task<string> GetLatestVersionFromTagsAsync( this Package package )
+        private static async Task<string> GetLatestVersionFromTagsAsync( this Package package )
         {
             if ( string.IsNullOrEmpty( package.Tag ) )
             {

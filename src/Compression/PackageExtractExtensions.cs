@@ -21,7 +21,7 @@ namespace CliKit
 
             Console.WriteLine( $"Extracting {compressedFilename}..." );
 
-            var tmpPath = Path.Combine( Path.GetTempPath(), $"{package.FileName}-{Guid.NewGuid().ToString( "N" ).Substring( 0, 6 )}" );
+            var tmpPath = Path.Combine( Path.GetTempPath(), $"{package.ToolName}-{Guid.NewGuid().ToString( "N" ).Substring( 0, 6 )}" );
 
             try
             {
@@ -86,7 +86,7 @@ namespace CliKit
             File.Delete( tmpFilepath );
 
             // move tool executable
-            var filepath = Path.Combine( tmpPath, package.GetPlatformTemplate().ExtractUrl ?? package.FileName );
+            var filepath = Path.Combine( tmpPath, package.GetPlatformTemplate().ExtractUrl ?? package.ToolName );
 
             if ( !File.Exists( filepath ) )
             {

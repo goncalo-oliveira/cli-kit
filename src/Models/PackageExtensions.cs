@@ -99,10 +99,10 @@ namespace CliKit
         {
             if ( OSInformation.IsWindows() )
             {
-                return string.Concat( package.FileName, ".exe" );
+                return string.Concat( package.ToolName, ".exe" );
             }
 
-            return package.FileName;
+            return package.ToolName;
         }
 
         public static string GetTargetFilePath( this Package package )

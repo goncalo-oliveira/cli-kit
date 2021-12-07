@@ -13,7 +13,7 @@ namespace CliKit
                 return ( null );
             }
 
-            package.FileName = name;
+            package.ToolName = name;
 
             if ( string.IsNullOrEmpty( package.Name ) )
             {

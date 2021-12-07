@@ -50,11 +50,11 @@ namespace CliKit
             var numberOfUpdates = 0;
             foreach ( var update in results )
             {
-                var version = installedTools.Tools.GetValueOrDefault( update.Package.FileName ) ?? string.Empty;
+                var version = installedTools.Tools.GetValueOrDefault( update.Package.ToolName ) ?? string.Empty;
 
                 if ( ( update.LatestVersion != null ) && !version.Equals( update.LatestVersion ) )
                 {
-                    Console.WriteLine( $"found {update.Package.FileName} {version}" );
+                    Console.WriteLine( $"found {update.Package.ToolName} {version}" );
                     Console.WriteLine( $"...a new version ({update.LatestVersion}) is available" );
 
                     if ( !AutoInstall )
@@ -85,10 +85,10 @@ namespace CliKit
         {
             var addCommand = new AddCommand
             {
-                Source = Source,
-                Name = package.Name,
-                Version = latestVersion
+                Source = Source
             };
+
+            package.SetVersion( latestVersion );
 
             return addCommand.InstallPackageAsync( package );
         }
@@ -98,12 +98,7 @@ namespace CliKit
             // TODO: this code is sort of duplicated on AddCommand
             //       make it better
 
-            var latestVersion = await package.GetLatestVersionAsync();
-
-            if ( ( latestVersion == null ) && ( !string.IsNullOrEmpty( package.Tag ) ) )
-            {
-                latestVersion = await package.GetLatestVersionFromTagsAsync();
-            }
+            var latestVersion = await package.GetLatestVersionFromGitHubAsync();
 
             // extract semver
             if ( latestVersion != null )
@@ -115,11 +110,11 @@ namespace CliKit
                 .GetSemVer();
             }
 
-            return ( new PackageUpdate
+            return (( new PackageUpdate
             {
                 Package = package,
                 LatestVersion = latestVersion
-            } );
+            } ));
         }
 
         private class PackageUpdate

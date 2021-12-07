@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using CliWrap;
 using McMaster.Extensions.CommandLineUtils;
+using ShellProgressBar;
 
 namespace CliKit
 {
@@ -16,12 +17,12 @@ namespace CliKit
         [Option( "--source|-s", Description = "Custom package source location" )]
         public string Source { get; set; }
 
-        [Option( "--version", Description = "Specific tool version to download" )]
-        public string Version { get; set; }
+        [Option( "--platform", Description = "Override the platform template to download" )]
+        public string PlatformOverride { get; set; }
 
         [Required]
-        [Argument( 0, Name = "name", Description = "The name of the tool to download" )]
-        public string Name { get; set; }
+        [Argument( 0, Name = "name", Description = "The name(s) of the tool(s) to download" )]
+        public string[] Names { get; set; }
 
         protected async Task<int> OnExecuteAsync( CommandLineApplication app )
         {
@@ -34,40 +35,57 @@ namespace CliKit
                 return ( 1 );
             }
 
-            // TODO: unless the name is '.' we install (or overwrite) a single tool
-
-            // look for version alias (name:version or name@version)
-            if ( Name.Contains( ':' ) || Name.Contains( '@' ) )
+            var packagesToInstall = new List<Package>();
+            foreach ( var nameItem in Names )
             {
-                if ( !string.IsNullOrEmpty( Version ) )
-                {
-                    // adding version directly and by option! no can do...
-                    Console.WriteLine( "Version number specified on the name but also with --version value!" );
-                    Console.WriteLine( "Use only one of the methods." );
-                    Console.WriteLine();
+                var name = nameItem;
+                var version = (string)null;
 
-                    return ( 1 );
+                // look for version alias (name:version or name@version)
+                if ( nameItem.Contains( ':' ) || nameItem.Contains( '@' ) )
+                {
+                    var idx = nameItem.IndexOfAny( new char[] { ':', '@' } );
+
+                    version = nameItem.Substring( idx + 1 );
+                    name = nameItem.Substring( 0, idx );
                 }
 
-                var idx = Name.IndexOfAny( new char[] { ':', '@' } );
-                Version = Name.Substring( idx + 1 );
+                var package = packageSource.Packages.GetPackage( name );
 
-                Name = Name.Substring( 0, idx );
+                if ( package == null )
+                {
+                    Console.WriteLine( $"I'm sorry, I don't know how to download '{name}' tool." );
+                    Console.WriteLine( "If you'd like to make a request or a contribution, visit us on GitHub" );
+                    Console.WriteLine( "https://github.com/goncalo-oliveira/cli-kit" );
+                    Console.WriteLine();
+
+                    continue;
+                }
+
+                // specific version?
+                if ( !string.IsNullOrEmpty( version ) )
+                {
+                    package.SetVersion( version );
+                }
+
+                packagesToInstall.Add( package );
             }
 
-            var package = packageSource.Packages.GetPackage( Name );
-
-            if ( package == null )
+            if ( !packagesToInstall.Any() )
             {
-                Console.WriteLine( $"I'm sorry, I don't know how to download '{Name}' tool." );
-                Console.WriteLine( "If you'd like to make a request or a contribution, visit us on GitHub" );
-                Console.WriteLine( "https://github.com/goncalo-oliveira/cli-kit" );
-                Console.WriteLine();
-
+                // nothing to install
                 return ( 1 );
             }
 
-            return await InstallPackageAsync( package );
+            // install single tool
+            foreach ( var package in packagesToInstall )
+            {
+                await InstallPackageAsync( package );
+            }
+
+            Console.WriteLine();
+
+            return ( 0 );
         }
 
         internal async Task<int> InstallPackageAsync( Package package )
@@ -86,74 +104,21 @@ namespace CliKit
                 return ( 1 );
             }
 
-            // specific version?
-            if ( !string.IsNullOrEmpty( Version ) )
-            {
-                package.SetVersion( Version );
-            }
-
             // is it a GitHub package?
             if ( package.Source.Equals( "github" ) && package.Version.Contains( '$' ) )
             {
-                await SetPackageVersionFromGitHubAsync( package );
-            }
+                var latestVersion = await package.GetLatestVersionFromGitHubAsync();
 
-            return await DownloadPackage( package );
-        }
-
-        private async Task<int> DownloadPackage( Package package )
-        {
-            if ( package.Version.Contains( '$' ) )
-            {
-                Console.WriteLine( $"I can't figure out the latest version for '{Name}' tool." );
-                Console.WriteLine( "You can try manually specifying a --version value." );
-                Console.WriteLine();
-
-                return ( 1 );
-            }
-
-            Console.WriteLine( $"Downloading {package.FileName}:{package.GetSemVer()}..." );
-
-            var platform = package.GetPlatformTemplate();
-            var url = package.GetDownloadUrl();
-
-            Console.WriteLine( url );
-
-            var tmpFilepath = Path.GetTempFileName();
-
-            // download file
-            var httpClient = new System.Net.Http.HttpClient();
-
-            using ( var streamIn = await httpClient.GetStreamAsync( url ) )
-            {
-                using ( var streamOut = new FileStream( tmpFilepath, FileMode.Open, FileAccess.Write, FileShare.None ) )
+                if ( latestVersion != null )
                 {
-                    await streamIn.CopyToAsync( streamOut );
+                    package.SetVersion( latestVersion, false );
                 }
             }
 
-            // TODO: handle tar.gz
-            // TODO: handle .zip
-            if ( platform.DownloadUrl.EndsWith( ".tar.gz" ) )
-            {
-                tmpFilepath = package.ExtractPackage( tmpFilepath, PackageCompression.TarGZip );
+            // download tool (and extract if necessary)
+            var tmpFilepath = await DownloadPackage( package );
 
-                if ( tmpFilepath == null )
-                {
-                    return ( 1 );
-                }
-            }
-
-            if ( platform.DownloadUrl.EndsWith( ".zip" ) )
-            {
-                tmpFilepath = package.ExtractPackage( tmpFilepath, PackageCompression.Zip );
-
-                if ( tmpFilepath == null )
-                {
-                    return ( 1 );
-                }
-            }
-
+            // copy tool to output path
             PathHelper.EnsureTargetPathExists();
 
             File.Move( tmpFilepath, package.GetTargetFilePath(), true );
@@ -171,46 +136,61 @@ namespace CliKit
                     .ExecuteAsync();
             }
 
-            Console.WriteLine();
-
             // add tool to local database
             var installedTools = await InstalledToolSource.LoadAsync();
 
-            installedTools.Tools[package.FileName] = package.GetSemVer();
+            installedTools.Tools[package.ToolName] = package.GetSemVer();
 
             await installedTools.WriteAsync();
 
             return ( 0 );
         }
 
-        private async Task<bool> SetPackageVersionFromGitHubAsync( Package package )
+        private async Task<string> DownloadPackage( Package package )
         {
-            // let's attempt to retrieve the latest release
-            var latestVersion = await package.GetLatestVersionAsync();
-
-            // if that doesn't work we'll attempt to retrieve the latest tag (when available)
-            if ( ( latestVersion == null ) && ( !string.IsNullOrEmpty( package.Tag ) ) )
+            if ( package.Version.Contains( '$' ) )
             {
-                latestVersion = await package.GetLatestVersionFromTagsAsync();
+                Console.WriteLine( $"I can't figure out the latest version for '{package.ToolName}' tool." );
+                Console.WriteLine( "You can try manually specifying a --version value." );
+                Console.WriteLine();
 
-                // an alternative to the tags, depending on the package, naturally, could be
-                // an external API
-                // for example....
-                // kubernetes releases can be retrieved using Google Storage API
-                // https://storage.googleapis.com/storage/v1/b/kubernetes-release/o?prefix=release/latest-&fields=items(name,generation,timeCreated)
-                // that returns the name and the timeCreated
-                // that will be much faster than using GitHub tags
+                return ( null );
             }
 
-            if ( latestVersion == null )
+            Console.WriteLine( $"Downloading {package.ToolName}:{package.GetSemVer()}..." );
+
+            var platform = package.GetPlatformTemplate();
+            var url = package.GetDownloadUrl();
+
+            Console.WriteLine( url );
+
+            var tmpFilepath = Path.GetTempFileName();
+
+            // download file
+            var httpClient = new System.Net.Http.HttpClient();
+
+            using ( var progressBar = new ProgressBar( 10000, string.Empty, new ProgressBarOptions
             {
-                return ( false );
+                ProgressCharacter = '.',
+                ForegroundColor = Console.ForegroundColor
+            } ) )
+            {
+                await httpClient.DownloadAsync( url, tmpFilepath, progressBar.AsProgress<float>() );
             }
 
-            package.SetVersion( latestVersion, false );
+            // TODO: handle tar.gz
+            // TODO: handle .zip
+            if ( platform.DownloadUrl.EndsWith( ".tar.gz" ) )
+            {
+                tmpFilepath = package.ExtractPackage( tmpFilepath, PackageCompression.TarGZip );
+            }
 
-            return ( true );
+            if ( platform.DownloadUrl.EndsWith( ".zip" ) )
+            {
+                tmpFilepath = package.ExtractPackage( tmpFilepath, PackageCompression.Zip );
+            }
+
+            return ( tmpFilepath );
         }
-
     }
 }

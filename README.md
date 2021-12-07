@@ -9,16 +9,21 @@ Simplifies downloading the latest version of a CLI tool. It also keeps track of 
 export PATH=$PATH:$HOME/.clikit/bin/
 ```
 
-Downloading the latest version of the tool
+Downloading the latest version of a tool
 
 ```bash
 clik add kubectl
 ```
 
-Downloading a specific version of the tool
+Downloading multiple tools at once
 
 ```bash
-clik add kubectl --version 1.21.7
+clik add kubectl terraform
+```
+
+Downloading a specific version of a tool
+
+```bash
 clik add kubectl:1.21.7
 clik add kubectl@1.21.7
 ```
@@ -48,7 +53,6 @@ The list of available tools can be found on [packages.yml](packages.yaml) on thi
 
 ## TODO
 
-- install multiple tools at once
 - allow a configuration file to customize where to download the tools
 - read local packages.y(a)ml file if it exists
 - self-update

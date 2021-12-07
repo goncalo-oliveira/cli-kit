@@ -8,12 +8,12 @@ namespace CliKit
         /// <summary>
         /// The name of the tool executable
         /// </summary>
-        internal string FileName { get; set; }
+        internal string ToolName { get; set; }
 
-        public bool IsCustomUrl { get; set; }
+        internal bool IsCustomUrl { get; set; }
 
         /// <summary>
-        /// The name of the tool
+        /// The name of the tool repository [github]
         /// </summary>
         public string Name { get; set; }
 
@@ -37,12 +37,6 @@ namespace CliKit
         /// The version template
         /// </summary>
         public string Version { get; set; } = "$";
-
-        /// <summary>
-        /// Additional plugins to use
-        /// </summary>
-        /// <value></value>
-        public Dictionary<Metadata> Plugins { get; set; }
 
         /// <summary>
         /// The tag template [url only]; tells installer to use tags (from GitHub) instead of releases
