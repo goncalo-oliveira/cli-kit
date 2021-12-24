@@ -66,6 +66,16 @@ packages:
       linux.arm64: hugo_${sem-version}_Linux-ARM64.tar.gz
       darwin.x64: hugo_${sem-version}_macOS-ARM64.tar.gz
       windows.x64: hugo_${sem-version}_Windows-64bit.zip
+  istioctl:
+    source: github
+    owner: istio
+    name: istio
+    description: Istio configuration command line utility for service operators
+    platforms:
+      linux.x64: istioctl-${version}-linux-amd64.tar.gz
+      linux.arm64: istioctl-${version}-linux-arm64.tar.gz
+      darwin.x64: istioctl-${version}-osx.tar.gz
+      windows.x64: istioctl-${version}-win.zip 
   jq:
     source: github
     owner: stedolan
