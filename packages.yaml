@@ -84,6 +84,17 @@ packages:
     platforms:
       linux.x64: k3s
       linux.arm64: k3s-arm64
+  kn:
+    source: github
+    owner: knative
+    name: client
+    description: Command-line tool for managing Knative resources
+    version: knative-v$
+    platforms:
+      linux.x64: kn-linux-amd64
+      linux.arm64: kn-linux-arm64
+      darwin.x64: kn-darwin-amd64
+      windows.x64: kn-windows-amd64.exe
   kubectl:
     source: github
     url: https://storage.googleapis.com/kubernetes-release/release/v${version}
